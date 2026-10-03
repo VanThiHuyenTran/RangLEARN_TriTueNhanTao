@@ -1,0 +1,64 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Edge {
+    char u, v;
+    int weight;
+};
+
+bool compareEdge(Edge a, Edge b) {
+    return a.weight < b.weight;
+}
+
+int parent[5];
+
+int findRoot(int i) {
+    if (parent[i] == i)
+        return i;
+    return parent[i] = findRoot(parent[i]);
+}
+
+void unite(int i, int j) {
+    int root_i = findRoot(i);
+    int root_j = findRoot(j);
+    if (root_i != root_j) {
+        parent[root_i] = root_j;
+    }
+}
+
+void kruskal(vector<Edge>& edges) {
+    for (int i = 0; i < 5; i++) parent[i] = i;
+
+    sort(edges.begin(), edges.end(), compareEdge);
+
+    int min_cost = 0;
+    cout << "--- KET QUA THUAT TOAN KRUSKAL ---" << endl;
+    cout << "Cac canh duoc chon de tao Cay Khung:" << endl;
+
+    for (auto edge : edges) {
+        int u = edge.u - 'A';
+        int v = edge.v - 'A';
+
+        if (findRoot(u) != findRoot(v)) {
+            cout << "- Canh (" << edge.u << ", " << edge.v << ") | Trong so: " << edge.weight << endl;
+            min_cost += edge.weight;
+            unite(u, v);
+        }
+    }
+    cout << "----------------------------------" << endl;
+    cout << "=> Tong trong so nho nhat: " << min_cost << endl;
+}
+
+int main() {
+    vector<Edge> edges = {
+        {'A', 'D', 1}, {'A', 'B', 2}, {'C', 'D', 2},
+        {'B', 'E', 3}, {'D', 'E', 3}, {'A', 'E', 6}
+    };
+
+    kruskal(edges);
+
+    return 0;
+}
